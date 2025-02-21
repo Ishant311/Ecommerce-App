@@ -2,13 +2,14 @@ import React from 'react'
 
 import { Disclosure, DisclosureButton, DisclosurePanel} from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
-import {  NavLink } from 'react-router-dom'
+import {  NavLink,useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/auth'
 
 
 function Header() {
   const cartVal = 0;
   const [auth,setAuth] = useAuth();
+  const navigate = useNavigate();
   const navigation = [
   ]
   auth.user === null?
@@ -21,7 +22,6 @@ function Header() {
       { name: 'Home', href: '/'},
       { name: 'Categories',href:'/categories'},
       { name: 'Cart', href: '/cart'},
-      { name : 'Logout',href:"/login"}
     )
   )
   const handleLogout = ()=>{
@@ -31,7 +31,7 @@ function Header() {
       token:""
     })
     localStorage.removeItem('auth');
-
+    navigate("/login");
   }
   return (
     <>
@@ -58,7 +58,6 @@ function Header() {
                     <NavLink
                       key={item.name}
                       to={item.href}
-                      onClick={item.name === "Logout"?handleLogout:null}
                       className={({ isActive }) =>
                         `${isActive ? 'bg-gray-900 text-white' : 'text-gray-300  hover:bg-gray-700 hover:text-white'} rounded-md px-3 py-2 link`
                       }
@@ -66,6 +65,18 @@ function Header() {
                       {item.name === "Cart"?`Cart (${cartVal})`:item.name}
                     </NavLink>
                   ))}
+                  {
+                  auth?.user?.name?(
+                        <select id="options" name="options" className='text-white text-center' onChange={(e)=>{
+                          e.target.value === "logout"?handleLogout():e.target.value === "dashboard" && auth.user.role === 1?navigate("/admin-dashboard"):navigate("/dashboard")}}>
+                          <option value="profile" className='text-black hidden'>{auth.user.name}</option>
+                          <option value="dashboard" className='text-black'>Dashboard</option>
+                          <option value="logout" className='text-black'>Logout
+                          </option>
+                        </select>
+                  ):null
+                  }
+                  
                 </div>
               </div>
             </div>
@@ -84,6 +95,7 @@ function Header() {
                     </NavLink>
                   ))}
                 </div>
+                
               </DisclosurePanel>
             </div>
           </div>

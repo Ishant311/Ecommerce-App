@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react'
 import Layout from '../../components/Layout/Layout'
 import {toast} from "react-toastify"
 import axios from "axios"
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate,useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/auth.jsx';
 function Login() {
     const [email,setEmail] = useState("");
     const [password,setPassword] = useState("");
     const [auth,setAuth] = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
     const handleSubmit = async (e)=>{
         e.preventDefault();
         try {
@@ -22,8 +23,8 @@ function Login() {
                 })
                 localStorage.setItem("auth",JSON.stringify(sendData.data))
                 setTimeout(()=>{
-                    navigate('/');
-                },5000);
+                    navigate(location.state || '/');
+                },500);
             }
             else{
                 toast.error(sendData.data.message);
@@ -72,7 +73,17 @@ function Login() {
                                 <button 
                                 type="submit"
                                 className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Login</button>
+                                
+                                <div className='flex items-center justify-center mx-auto w-[80%]'>
+                                <button 
+                                className="w-[50%] text-white flex items-center cursor-pointer justify-center bg-gray-600 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                                    <Link to = "/forgot-password">
+                                        Forgot Password
+                                    </Link>
+                                </button>
+                                </div>
                                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+                                
                                     Not an Existing User <Link to="/register" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Register here</Link>
                                 </p>
                             </form>
