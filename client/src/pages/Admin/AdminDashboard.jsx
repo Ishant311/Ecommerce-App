@@ -6,7 +6,7 @@ function AdminDashboard() {
   return (
     <Layout title="admin-dashboard">
         <div>AdminDashboard</div>
-        <div className='text-center w-[70%] h-[70vh] m-auto flex justify-start items-center gap-4'>
+        <div className='text-center w-[100%] h-[70vh] m-auto flex justify-start items-center gap-4'>
         <AdminMenu />
         <AdminDetails/>
         </div>

@@ -7,9 +7,9 @@ function Dashboard() {
   const [auth,setAuth] = useAuth();
   return (
     <Layout title = "user-dashboard">
-        <div className = "flex items-center justify-center h-[70vh]"> 
+        <div className = "flex items-center justify-center h-[70vh] w-[60%] m-auto "> 
           <UserMenu/>
-          <div>
+          <div className='w-[50%] flex items-start justify-start border-2 flex-col items-center p-5 text-gray-600 border-gray-400'>
             <h1>{auth.user.name}</h1>
             <h1>{auth.user.email}</h1>
           </div>

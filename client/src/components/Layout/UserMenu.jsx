@@ -11,7 +11,7 @@ function UserMenu() {
         {title:"Orders",href:'/orders'},
     ]
   return (
-        <div>
+        <div className='flex justify-center items-center w-[50%] flex-col'>
             <h1 className='mb-10'>
             Dashboard
             </h1>
