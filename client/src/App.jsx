@@ -16,10 +16,14 @@ import CreateProduct from "./pages/Admin/CreateProduct"
 import Users from "./pages/Admin/Users"
 import Order from "./pages/user/Order"
 import Profile from "./pages/user/Profile"
+import Products from "./pages/Admin/Products"
+import { ToastContainer } from "react-toastify"
+import UpdateProduct from "./pages/Admin/UpdateProduct"
 function App() {
 
   return (
     <>
+    <ToastContainer/>
     <Routes>
       <Route path="/" element = {<HomePage/>}/>
       <Route path="/about" element = {<About/>}/>
@@ -30,8 +34,10 @@ function App() {
       </Route>
       <Route path = "/admin-dashboard" element = {<AdminRoute/>}>
         <Route path = "" element = {<AdminDashboard/>}/>
+        <Route path = "product" element = {<Products/>}/>
         <Route path = "create-category" element = {<Createcategory/>}/>
         <Route path = "add-product" element = {<CreateProduct/>}/>
+        <Route path = "product/:slug" element = {<UpdateProduct/>}/>
         <Route path = "users" element = {<Users/>}/>
       </Route>
       <Route path="/contact" element = {<Contact/>}/>

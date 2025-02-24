@@ -132,7 +132,7 @@ export const productPhotoController = async(req,res)=>{
 
 export const deleteProductController = async(req,res)=>{
     try {
-        const deleteProduct = await productModel.findById(req.params.id);
+        const deleteProduct = await productModel.findByIdAndDelete(req.params.id);
         res.status(200).send({
             success:true,
             message:"deleted successfully",
@@ -150,22 +150,6 @@ export const updateProductController = async(req,res)=>{
     try {
         const {name,description,price,category,quantity,shipping} = req.fields;
         const {photo} = req.files;
-        switch (true) {
-            case !name:
-                return res.send({message:"Name is required"})
-            case !description:
-                return res.send({message:"Description is required"})
-            case !price:
-                return res.send({message:"Price is required"})
-            case !category:
-                return res.send({message:"Category is required"})
-            case !quantity:
-                return res.send({message:"Quantity is required"})
-            case !photo && photo.size > 1000000:
-                return res.send({message:"Photo is required and must be within 1mb"})
-            default:
-                break;
-        }
         const products = await productModel.findById(req.params.id)
         products.name = name;
         products.description = description;
@@ -180,7 +164,7 @@ export const updateProductController = async(req,res)=>{
         await products.save();
         return res.status(201).send({
             success:true,
-            message:"product created successfully",
+            message:"product updated successfully",
             products
         })
         
@@ -189,7 +173,54 @@ export const updateProductController = async(req,res)=>{
         res.status(500).send({
             success:false,
             error,
-            message:"error in creating product"
+            message:"error in updating product"
         })        
+    }
+}
+
+export const productFilterController = async(req,res)=>{
+    try {
+        const {checked,radio} = req.body;
+        let args = {};
+        if(checked.length>0) args.category = checked;
+        if(radio.length>0) {
+            console.log(radio[0],radio[1]);
+            args.price = {$gte:radio[0] , $lte:radio[1]}
+        }
+        const products = await productModel.find(args);
+        // console.log(products);
+        res.status(200).send({
+            success:true,
+            products 
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            success:false,
+            error,
+            message:"error in filtering product"
+        })   
+    }
+}
+
+export const productListController = async (req,res)=>{
+    try {
+        const perPage = 6;
+        const page = req.params.page?req.params.page:1;
+        const products = await productModel.find({}).select("-photo").skip((page-1)*perPage).limit(perPage).sort({createdAt:-1});
+
+        res.status(200).send({
+            success:true,
+            products
+        })
+        
+        
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            success:false,
+            error,
+            message:"error in filtering product"
+        })   
     }
 }

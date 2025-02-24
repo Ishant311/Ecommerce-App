@@ -9,7 +9,9 @@ function AdminMenu() {
     [
         {title:"Create Category",href:'/create-category'},
         {title:"Add Product",href:'/add-product'},
+        {title:"Products",href:'/product'},
         {title:"Users",href:'/users'}
+        
     ]
   return (
    
