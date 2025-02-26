@@ -6,11 +6,17 @@ import authRoute from "./routes/authRoute.js"
 import categoryRoute from "./routes/categoryRoutes.js"
 import productRoutes from "./routes/productRoutes.js"
 import cors from "cors"
+import Razorpay from "razorpay"
+
 
 
 // configure env
 dotenv.config();
 
+export const instance = new Razorpay({
+    key_id: RAZORPAY_KEY_ID,
+    key_secret: RAZORPAY_SECRET_KEY,
+});
 //database config
 connectDB();
 

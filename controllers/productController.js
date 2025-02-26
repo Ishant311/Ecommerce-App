@@ -2,39 +2,15 @@ import slugify from "slugify";
 import productModel from "../models/productModel.js";
 import fs from "fs"
 import categoryModel from "../models/categoryModel.js"
+import dotenv from"dotenv"
+import orderModel from "../models/orderModel.js";
+import { instance } from "../server.js";
 
-// name:{
-//         type:String,
-//         required:true
-//     },
-//     slug:{
-//         type:String,required:true,
-//         lowercase:true
-//     },
-//     description:{
-//         type:String,
-//         required:true
-//     },
-//     price:{
-//         type:String,
-//         required:true
-//     },
-//     category:{
-//         type:mongoose.ObjectId,
-//         ref:"Category",
-//         required:true
-//     },
-//     quantity:{
-//         type:Number,
-//         required:true
-//     },
-//     photo:{
-//         data:Buffer,
-//         contentType:String,
-//     },
-//     shipping:{
-//         type:Boolean,
-//     }
+dotenv.config();
+
+
+
+
 export const createProductController = async (req,res)=>{
     try {
         const {name,description,price,category,quantity,shipping} = req.fields;
@@ -314,3 +290,16 @@ export const categoryProductController = async(req,res)=>{
         })
     }
 }
+export const checkout = async(req,res)=>{
+    const options = {
+        amount:50000,
+        currency:"INR",
+    }
+    const order = await instance.orders.create(options);
+
+    console.log(order);
+    res.status(200).json({
+        success:true
+    })
+}
+

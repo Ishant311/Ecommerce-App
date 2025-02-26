@@ -46,7 +46,7 @@ function CreateProduct() {
       const {data} = await axios.post(`${import.meta.env.VITE_API_URL}/api/v1/product/create-product`,productData);
       console.log(data);
       if(data?.success){
-        toast.success(data.message, { autoClose: 1000 }); // Display for 2s
+        toast.success(data.message, { autoClose: 1000 }); 
         setTimeout(() => navigate("/admin-dashboard/product"), 1000);
       }
       else{

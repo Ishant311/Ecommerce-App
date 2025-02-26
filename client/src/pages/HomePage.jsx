@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import {Button, Checkbox, Radio} from 'antd'
 import { prices } from '../components/Prices.js';
 import { useCart } from '../context/cart.jsx';
+import { toast } from 'react-toastify';
 
 function HomePage() {
   const [auth,setAuth] = useAuth();
@@ -168,6 +169,9 @@ function HomePage() {
                                 <button 
                                 onClick = {()=>{
                                   setCart([...cart,product]);
+                                  toast.success("Product Added Successfully",{
+                                    autoClose:1000
+                                  })
                                 }}
                                 className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 w-auto ">
                                 Add to Cart
