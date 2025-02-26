@@ -1,6 +1,7 @@
 import slugify from "slugify";
 import productModel from "../models/productModel.js";
 import fs from "fs"
+import categoryModel from "../models/categoryModel.js"
 
 // name:{
 //         type:String,
@@ -220,7 +221,96 @@ export const productListController = async (req,res)=>{
         res.status(500).send({
             success:false,
             error,
-            message:"error in filtering product"
+            message:"error in listing product"
         })   
+    }
+}
+
+export const totalProductController = async(req,res)=>{
+    try {
+        const total = await productModel.find({});
+        const totalLength = total.length;
+        res.status(200).send({
+            success:true,
+            totalLength
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            success:false,
+            error,
+            message:"error in getting product"
+        })
+    }
+}
+export const searchProductController = async(req,res)=>{
+    try {
+        const {keyword} = req.params;
+
+        //1 way
+        // const product = await productModel.find({
+        //     $or:[
+        //         {name:{$regex :keyword,$options:"i"}},
+        //         {description:{$regex :keyword,$options:"i"}},
+        //     ]
+        // })
+
+        //2 way
+        const product = await productModel.find({
+            $text: { $search: keyword }
+        }).select("-photo").sort({ score: { $meta: "textScore" } });
+        res.status(200).send({
+            success:true,
+            product
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            success:false,
+            error,
+            message:"error in searching product"
+        })
+    }
+}
+
+export const similarProductsController = async(req,res)=>{
+    try {
+        const {pid,cid} = req.params;
+        const product = await productModel.find({
+            category:cid,
+            _id:{$ne:pid}
+        }).select("-photo").limit(3).populate("category");
+        res.status(200).send({
+            success:true,
+            product
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            success:false,
+            error,
+            message:"error in similar product"
+        })
+    }
+}
+
+export const categoryProductController = async(req,res)=>{
+    try {
+        const category = await categoryModel.findOne({slug:req.params.slug});
+        const product = await productModel.find({
+            category:category._id
+        }).select("-photo").populate("category");
+        res.status(200).send({
+            success:true,
+            product,
+            category
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            success:false,
+            error,
+            message:"error in similar product"
+        })
     }
 }

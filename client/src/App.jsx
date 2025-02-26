@@ -19,13 +19,22 @@ import Profile from "./pages/user/Profile"
 import Products from "./pages/Admin/Products"
 import { ToastContainer } from "react-toastify"
 import UpdateProduct from "./pages/Admin/UpdateProduct"
+import Search from "./pages/Search"
+import ProductDetails from "./pages/ProductDetails"
+import Categories from "./pages/Categories"
+import SingleCategory from "./pages/SingleCategory"
+import Cart from "./pages/Cart"
 function App() {
 
   return (
     <>
-    <ToastContainer/>
     <Routes>
       <Route path="/" element = {<HomePage/>}/>
+      <Route path = "/product/:slug" element = {<ProductDetails/>}/>
+      <Route path = "/cart" element = {<Cart/>}/>
+      <Route path="/search" element = {<Search/>} />
+      <Route path="/category" element = {<Categories/>} />
+      <Route path = "/category/:slug" element ={<SingleCategory/>} />
       <Route path="/about" element = {<About/>}/>
       <Route path = "/dashboard" element = {<Private/>}>
         <Route path = "" element = {<Dashboard/>}/>
