@@ -6,17 +6,13 @@ import authRoute from "./routes/authRoute.js"
 import categoryRoute from "./routes/categoryRoutes.js"
 import productRoutes from "./routes/productRoutes.js"
 import cors from "cors"
-import Razorpay from "razorpay"
 
 
 
 // configure env
 dotenv.config();
 
-export const instance = new Razorpay({
-    key_id: RAZORPAY_KEY_ID,
-    key_secret: RAZORPAY_SECRET_KEY,
-});
+
 //database config
 connectDB();
 
@@ -27,6 +23,7 @@ const PORT = process.env.PORT || 8080;
 //middleware
 app.use(morgan('dev'));
 app.use(express.json());
+app.use(express.urlencoded({extended:true}));
 app.use(cors());
 
 
@@ -36,9 +33,11 @@ app.use("/api/v1/category",categoryRoute)
 app.use("/api/v1/product",productRoutes)
 
 //rest api
-app.get("/",(req,res)=>{
-    // console.log(req);
-    res.send("<h1> Hello world </h1>")
+app.get("/api/getkey",(req,res)=>{
+    res.status(200).json({
+        success:true,
+        key:process.env.RAZORPAY_KEY_ID
+    })
 })
 
 app.listen(PORT,()=>{

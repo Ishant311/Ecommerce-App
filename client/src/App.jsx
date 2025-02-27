@@ -38,7 +38,7 @@ function App() {
       <Route path="/about" element = {<About/>}/>
       <Route path = "/dashboard" element = {<Private/>}>
         <Route path = "" element = {<Dashboard/>}/>
-        <Route path = "orders" element = {<Order/>}/>
+        <Route path = "order" element = {<Order/>}/>
         <Route path = "profile" element = {<Profile/>}/>
       </Route>
       <Route path = "/admin-dashboard" element = {<AdminRoute/>}>

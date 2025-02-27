@@ -8,7 +8,7 @@ function UserMenu() {
     const navigator = 
     [
         {title:"Profile",href:'/profile'},
-        {title:"Orders",href:'/orders'},
+        {title:"Orders",href:'/order'},
     ]
   return (
         <div className='flex justify-center items-center flex-1 flex-col'>

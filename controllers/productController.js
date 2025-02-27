@@ -3,11 +3,17 @@ import productModel from "../models/productModel.js";
 import fs from "fs"
 import categoryModel from "../models/categoryModel.js"
 import dotenv from"dotenv"
+import Razorpay from "razorpay"
 import orderModel from "../models/orderModel.js";
-import { instance } from "../server.js";
+import crypto from "crypto";
+
 
 dotenv.config();
 
+const instance = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_SECRET_KEY,
+});
 
 
 
@@ -291,15 +297,99 @@ export const categoryProductController = async(req,res)=>{
     }
 }
 export const checkout = async(req,res)=>{
-    const options = {
-        amount:50000,
-        currency:"INR",
-    }
-    const order = await instance.orders.create(options);
+    try{
 
-    console.log(order);
-    res.status(200).json({
-        success:true
-    })
+        const {cart,total} = req.body;
+        const options = {
+            amount:Number(total * 100),
+            currency:"INR",
+        }
+        const order = await instance.orders.create(options);
+    
+        res.status(200).json({
+            success:true,
+            order
+        })
+    }catch(error){
+        console.log(error)
+    }
+}
+export const paymentVerification = async(req,res)=>{
+    try {
+        
+        const {razorpay_signature,razorpay_payment_id,razorpay_order_id,cart} = req.body;
+        let ids = [];
+        for(let i = 0;i<cart.length;i++){
+            ids.push(cart[i]._id);
+        }
+        console.log(ids);
+        const generated_signature = crypto
+            .createHmac("sha256", process.env.RAZORPAY_SECRET_KEY)
+            .update(razorpay_order_id + "|" + razorpay_payment_id)
+            .digest("hex");
+        
+        if(generated_signature === razorpay_signature){
+            try {
+                const order = await orderModel.create({
+                    products:ids,
+                    payment:true,
+                    buyer:req.user._id,
+                })
+                res.status(200).json({success:true,order});
+            } catch (error) {
+                res.status(500).send(
+                    {
+                        success:false,
+                        message:"error in adding products",
+                        error
+                    })
+            }
+        }
+        else{
+            res.status(404).json({success:true});
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            success:false,
+            error,
+            message:"error in payment"
+        })
+    }
+
+}
+export const getOrderController = async(req,res)=>{
+    try {
+        const order = await orderModel.find({buyer:req.user._id});
+        res.status(200).send({
+            success:true,
+            message:"orders fetched successfully",
+            order
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            success:false,
+            error,
+            message:"error in fetching order"
+        })
+    }
 }
 
+export const getProductsOnlyController = async(req,res)=>{
+    try {
+        const {products} = req.body;
+        const productDetails = await productModel.find({_id:{$in:products}}).select("-photo");
+        res.status(200).send({
+            success:true,
+            productDetails
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success:false,
+            error,
+            message:"error in fetching order"
+        })
+    }
+}

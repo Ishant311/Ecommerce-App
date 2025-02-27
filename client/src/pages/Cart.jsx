@@ -6,27 +6,14 @@ import { useAuth } from '../context/auth';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import logo from "../../public/favicon.ico"
 
 function Cart() {
     const [cart,setCart] = useCart();
     const [user,setUser] = useState(true);
     const [auth,setAuth] = useAuth();
     const navigate = useNavigate();
-    const [clientToken,setClientToken] = useState("");
-    const [instance,setInstance] = useState(null);
     const [loading,setLoading] = useState(false);
-
-    const getToken = async()=>{
-        try {
-            const {data} = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/product/braintree/token`);
-            setClientToken(data?.clientToken); 
-        } catch (error) {
-            
-        }
-    }
-    useEffect(()=>{
-        getToken();
-    },[auth?.token])
     const verifyUser = async()=>{
         try {
             const {data} = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/auth/user-auth`);
@@ -39,14 +26,20 @@ function Cart() {
         } catch (error) {
         }
     }
-    const getTotal = ()=>{
+    const getTotalINR = ()=>{
         let total = 0;
         cart.map((item)=>(total+=item.price));
         return total.toLocaleString("en-US",{
             style:"currency",
-            currency:"USD"
+            currency:"INR"
         })
     }
+    const getTotal = ()=>{
+        let total = 0;
+        cart.map((item)=>(total+=item.price));
+        return total;
+    }
+
     const getCart = (id)=>{
         let arr = [...cart];
         let index = arr.findIndex((item)=>item._id === id);
@@ -54,18 +47,56 @@ function Cart() {
         setCart(arr);
         localStorage.setItem("cart",JSON.stringify(arr));
     }
-    const handlePayment = async()=>{
+    const checkoutHandler = async()=>{
         try {
             setLoading(true);
-            const {nonce} = await instance.requestPaymentMethod();
-            const {data} = await axios.post(`${import.meta.env.VITE_API_URL}/api/v1/product/braintree/payment`,{
-                nonce,cart
+            const total = getTotal();
+            const {data:{key}} = await axios.get(`${import.meta.env.VITE_API_URL}/api/getkey`)  
+            const {data:{order}} = await axios.post(`${import.meta.env.VITE_API_URL}/api/v1/product/checkout`,{
+                cart,total
             })
+            const options = {
+                key, 
+                amount: order.amount, 
+                currency: "INR",
+                name: "Ishant arora", 
+                description: "Tutorial of razorpay",
+                image: logo,
+                order_id: order.id, 
+                callback_url: `${import.meta.env.VITE_API_URL}/api/v1/product/paymentverification`,
+                prefill: { 
+                    name: auth?.user.name,
+                    email: auth?.user.email,
+                    contact: auth?.user.phone 
+                },
+                notes: {
+                    address: "Razorpay Corporate Office",
+                },
+                theme: {
+                    "color": "#121212"
+                },
+                handler:async function (response) {
+                    console.log("Payment Response:", response);
+                    
+                    axios.post(`${import.meta.env.VITE_API_URL}/api/v1/product/paymentverification`, {
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_signature: response.razorpay_signature,
+                        cart
+                    }).then(res => {
+                        navigate('/dashboard/order');
+                        setLoading(false);
+                        setCart([]);
+                        localStorage.removeItem("cart");
+                    }).catch(err => {
+                        toast.error("Payment Failed!");
+                        setLoading(false);
+                    });
+                }
+            };
+            const razor = new window.Razorpay(options);
+            razor.open();
             setLoading(false);
-            localStorage.removeItem("cart")
-            setCart([]);
-            navigate('/dashboard/order');
-            toast.success("payment completed successfully")
         } catch (error) {
             console.log(error);
             setLoading(false);
@@ -139,7 +170,7 @@ function Cart() {
                     </div>
                 </div>
                 <div>
-                    Total: {getTotal()}
+                    Total: {getTotalINR()}
                 </div>
                 {auth?.user?.address ? (
                     <>
@@ -168,23 +199,15 @@ function Cart() {
                     </div>
                 )}
                 <div className="mt-2">
-                    {
-                        !clientToken || !cart?.length ? (""):(
-                            <>
-                                <DropIn 
-                                className="inline-flex min-h-200"
-                                options={{authorization:clientToken,paypal:{flow:'vault'}}}
-                                onInstance={instance => setInstance(instance) }/>
-                                
-                                <button
-                                onClick={handlePayment}
-                                className = "inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 w-auto"
-                                disabled = {!loading || !instance || !auth?.user?.address}>
-                                    {loading?"Processing....":"Make Payment"}
-                                </button>
-                            </>
-                        )
+                    {auth?.user?
+                    <button
+                    onClick={checkoutHandler}
+                    className = "inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 w-auto"
+                    disabled = {loading}>
+                        {loading?"Processing....":"Make Payment"}
+                    </button>:null
                     }
+                
                     
                         
                 </div>
