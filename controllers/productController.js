@@ -317,7 +317,7 @@ export const checkout = async(req,res)=>{
 export const paymentVerification = async(req,res)=>{
     try {
         
-        const {razorpay_signature,razorpay_payment_id,razorpay_order_id,cart} = req.body;
+        const {razorpay_signature,razorpay_payment_id,razorpay_order_id,cart,total} = req.body;
         let ids = [];
         for(let i = 0;i<cart.length;i++){
             ids.push(cart[i]._id);
@@ -332,7 +332,7 @@ export const paymentVerification = async(req,res)=>{
             try {
                 const order = await orderModel.create({
                     products:ids,
-                    payment:true,
+                    payment:total,
                     buyer:req.user._id,
                 })
                 res.status(200).json({success:true,order});
@@ -386,6 +386,30 @@ export const getProductsOnlyController = async(req,res)=>{
         })
     } catch (error) {
         console.log(error);
+        res.status(500).send({
+            success:false,
+            error,
+            message:"error in fetching order"
+        })
+    }
+}
+
+export const getOrderControllerByUser = async(req,res)=>{
+    try {
+        const order = await orderModel.find({buyer:req.params.id}).populate({
+            path:"buyer",
+            select:"-password -answer -role"
+        }).populate({
+            path:"products",
+            select:"-photo"
+        });
+        res.status(200).send({
+            success:true,
+            message:"orders fetched successfully",
+            order
+        })
+    } catch (error) {
+        console.log(error)
         res.status(500).send({
             success:false,
             error,

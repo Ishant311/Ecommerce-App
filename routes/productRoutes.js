@@ -1,6 +1,6 @@
 import express from "express"
 import {requireSignIn , isAdmin} from "../middlewares/authMiddleware.js"
-import { createProductController,getProductController,getDesiredProductController,productPhotoController,deleteProductController,updateProductController,productFilterController, productListController, totalProductController, searchProductController, similarProductsController, categoryProductController, checkout, paymentVerification, getOrderController, getProductsOnlyController } from "../controllers/productController.js";
+import { createProductController,getProductController,getDesiredProductController,productPhotoController,deleteProductController,updateProductController,productFilterController, productListController, totalProductController, searchProductController, similarProductsController, categoryProductController, checkout, paymentVerification, getOrderController, getProductsOnlyController, getOrderControllerByUser } from "../controllers/productController.js";
 import formidable from "express-formidable"
 
 const router = express.Router();
@@ -49,9 +49,7 @@ router.post('/paymentverification',requireSignIn,paymentVerification)
 
 router.get("/get-order",requireSignIn,getOrderController);
 
-
-
-
+router.get("/get-order/:id",requireSignIn,isAdmin,getOrderControllerByUser);
 
 
 export default router;

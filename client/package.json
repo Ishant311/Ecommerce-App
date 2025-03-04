@@ -16,11 +16,13 @@
     "@tailwindcss/vite": "^4.0.6",
     "axios": "^1.7.9",
     "braintree-web-drop-in-react": "^1.2.1",
+    "dayjs": "^1.11.13",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-helmet": "^6.1.0",
     "react-router-dom": "^7.1.5",
     "react-toastify": "^11.0.3",
+    "tailwind-scrollbar-hide": "^2.0.0",
     "tailwindcss": "^4.0.6"
   },
   "devDependencies": {

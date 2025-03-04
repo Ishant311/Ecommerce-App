@@ -160,7 +160,7 @@ function HomePage() {
                                     <div>
 
                                     <p className="overflow-hidden  w-60 mb-3 font-normal text-gray-700 ">{product?.description?.substring(0,30)}...</p>
-                                    <p className="overflow-hidden w-60 mb-3 font-normal text-gray-700 ">{product.price}$</p>
+                                    <p className="overflow-hidden w-60 mb-3 font-normal text-gray-700 ">₹{product.price}</p>
                                     </div>
                                     
                                 </div>

@@ -15,7 +15,7 @@ function Private() {
                     Authorization: auth?.token,
                 }
             })
-            if(res.data.ok){
+            if(res?.data?.ok){
                 setOk(true);
             }
             else{

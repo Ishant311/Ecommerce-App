@@ -14,5 +14,8 @@
 .link{
     font-weight: 300 ;
 }
+.scrollbar-hidden::-webkit-scrollbar {
+    display: none;
+}
 
 /*---------------------------------------- footer-CSS --------------------------- */

@@ -24,6 +24,7 @@ import ProductDetails from "./pages/ProductDetails"
 import Categories from "./pages/Categories"
 import SingleCategory from "./pages/SingleCategory"
 import Cart from "./pages/Cart"
+import OrderStatus from "./pages/Admin/OrderStatus"
 function App() {
 
   return (
@@ -48,6 +49,7 @@ function App() {
         <Route path = "add-product" element = {<CreateProduct/>}/>
         <Route path = "product/:slug" element = {<UpdateProduct/>}/>
         <Route path = "users" element = {<Users/>}/>
+        <Route path = "order/:id" element = {<OrderStatus/>}/>
       </Route>
       <Route path="/contact" element = {<Contact/>}/>
       <Route path="/policy" element = {<Policy/>}/>

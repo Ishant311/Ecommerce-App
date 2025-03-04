@@ -163,3 +163,21 @@ export const updateProfileController = async(req,res)=>{
     }
 }
 
+export const allUserController = async(req,res)=>{
+    try {
+        const userId = req.user._id;
+        const allUsers = await userModel.find({
+            _id:{$ne:userId}
+        }).select("-password -answer -role");
+        res.status(200).send({
+            success:true,
+            allUsers
+        })
+    } catch (error) {
+        res.status(500).send({
+            success:false,
+            message:"Server is not well",
+            error
+        })
+    }
+}
