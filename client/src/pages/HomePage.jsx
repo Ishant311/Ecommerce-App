@@ -4,7 +4,6 @@ import { useAuth } from '../context/auth.jsx'
 import axios from 'axios';
 import banner from "../assets/banner.png";
 import { Link, useNavigate } from 'react-router-dom'
-import { Button, Checkbox, Radio } from 'antd'
 import { prices } from '../components/Prices.js';
 import { useCart } from '../context/cart.jsx';
 import { toast } from 'react-toastify';
@@ -15,7 +14,7 @@ function HomePage() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [checked, setChecked] = useState([]);
-  const [radio, setRadio] = useState("");
+  const [radio, setRadio] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -105,47 +104,51 @@ function HomePage() {
   }, [cart])
   return (
     <Layout title={"Best Offers"}>
-      <img src = {banner} className='w-full'/>
+      <img src={banner} className='w-full' />
       <div className='flex mt-3 py-10 justify-center items-start w-[100%] m-auto'>
         <div className='flex flex-col w-[50%] items-center justify-start'>
-        <div className="flex flex-col justify-center items-start space-y-2 p-4 bg-white shadow-md rounded-lg mb-6">
-          <h3 className="text-lg font-semibold text-gray-700 text-center">
-            Select Categories
-          </h3>
-          {categories?.map((category) => (
-            <label
-              key={category._id}
-              className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-100 transition cursor-pointer w-full md:w-auto"
-            >
-              <Checkbox
-                checked={checked.includes(category._id)}
-                onChange={(e) => handleFilter(e.target.checked, category._id)}
-                className="text-gray-600"
-              />
-              <span className="text-gray-700">{category.name}</span>
-            </label>
-          ))}
-        </div>
+          <div className="flex flex-col justify-center items-start space-y-2 p-4 bg-white shadow-md rounded-lg mb-6">
+            <h3 className="text-lg font-semibold text-gray-700 text-center">
+              Select Categories
+            </h3>
+            {categories?.map((category) => (
+              <label
+                key={category._id}
+                className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-100 transition cursor-pointer w-full md:w-auto"
+              >
+                <input
+                  type="checkbox"
+                  checked={checked.includes(category._id)}
+                  onChange={(e) => handleFilter(e.target.checked, category._id)}
+                  className="text-gray-600 w-4 h-4 cursor-pointer"
+                />
+
+                <span className="text-gray-700">{category.name}</span>
+              </label>
+            ))}
+          </div>
 
 
           <div className="flex flex-col space-y-2 p-3  mb-4 bg-white shadow-md rounded-lg">
             <h3 className="text-lg font-semibold text-gray-700">Select Price Range</h3>
-            <Radio.Group
-              value={radio}
-              onChange={(e) => setRadio(e.target.value)}
-              className="space-y-2 w-[100%]"
-            >
+            <div className="space-y-2 w-full">
               {prices?.map((price) => (
-                <div
+                <label
                   key={price._id}
-                  className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-100 transition"
+                  className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-100 transition cursor-pointer"
                 >
-                  <Radio value={price.array} className="text-gray-600">
-                    {price.name}
-                  </Radio>
-                </div>
+                  <input
+                    type="radio"
+                    name="price"
+                    value={JSON.stringify(price.array)}
+                    checked={JSON.stringify(radio) === JSON.stringify(price.array)}
+                    onChange={(e) => setRadio(JSON.parse(e.target.value))}
+                    className="w-4 h-4 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className="text-gray-600">{price.name}</span>
+                </label>
               ))}
-            </Radio.Group>
+            </div>
           </div>
 
           <div className='flex flex-col'>
@@ -162,6 +165,7 @@ function HomePage() {
         </div>
         <div className='flex flex-col'>
           <div className='flex flex-wrap justify-center items-center '>
+
             <div className='flex flex-wrap flex-row justify-center items-center gap-4 mt-5'>
               {products?.map((product) => {
                 return (
