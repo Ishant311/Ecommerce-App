@@ -1,4 +1,3 @@
-import DropIn from "braintree-web-drop-in-react";
 import React, { useEffect, useState } from 'react'
 import { useCart } from '../context/cart'
 import Layout from '../components/Layout/Layout';

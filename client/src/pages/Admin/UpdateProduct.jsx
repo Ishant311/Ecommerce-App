@@ -3,10 +3,8 @@ import Layout from '../../components/Layout/Layout'
 import AdminMenu from '../../components/Layout/AdminMenu'
 import { toast } from 'react-toastify';
 import axios from 'axios';
-import { Select } from 'antd';
 import { useEffect } from 'react';
 import { Link, useNavigate,useParams } from 'react-router-dom';
-const {Option} = Select
 
 function UpdateProduct() {
     const [categories,setCategories] = useState([]);
@@ -111,15 +109,15 @@ function UpdateProduct() {
             Update Product
         </h1>
         <div className='m-1'>
-           <Select variant={false} placeholder="Select a category" size="large" showSearch className='border-2 border-black rounded-xl w-[100%] text-left focus:outline-none mb-3' value = {category} onChange={(value)=>{
+           <select  placeholder="Select a category" size="large" className='border-2 border-black rounded-xl w-[100%] text-left focus:outline-none mb-3' value = {category} onChange={(value)=>{
             setCategory(value);
            }}>
             {categories?.map((items)=>(
-              <Option key = {items._id} value={items._id}>
+              <option key = {items._id} value={items._id}>
                 {items.name}
-              </Option>
+              </option>
             ))}
-           </Select>
+           </select>
            <div className='flex flex-col justify-center items-center '>
             <label htmlFor='upload' className="w-60 px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-blue-700 bg-gray-100 hover:bg-gray-200 focus:ring-2 focus:ring-blue-500 cursor-pointer flex items-center justify-center mt-4"> {photo?photo.name:"Upload File"} </label>
             <input 
@@ -181,12 +179,12 @@ function UpdateProduct() {
               />
             </div>
             <div className='mt-7 w-[100%]'>
-              <Select variant={false} placeholder="Select Shipping" size="large" showSearch className='w-[100%] border-2 border-black rounded-xl text-left focus:border-none mb-3 hover:outline-none' value={shipping} onChange={(value)=>{
+              <select variant={false} placeholder="select Shipping" size="large" showSearch className='w-[100%] border-2 border-black rounded-xl text-left focus:border-none mb-3 hover:outline-none' value={shipping} onChange={(value)=>{
                 setShipping(value);
               }}>
-                <Option value={true}>Yes</Option>
-                <Option value={false}>No</Option>
-              </Select>
+                <option value={true}>Yes</option>
+                <option value={false}>No</option>
+              </select>
             </div>
             <div className='flex gap-2'>
 
