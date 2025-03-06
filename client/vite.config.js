@@ -5,13 +5,5 @@ export default defineConfig({
   plugins: [
     react(),
     tailwindcss()
-  ],
-  optimizeDeps: {
-    include: ['antd'],
-  },
-  build: {
-    rollupOptions: {
-      external: ['antd'],
-    },
-  },
+  ]
 })
