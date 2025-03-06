@@ -3,6 +3,9 @@
 @import "tailwindcss";
 
 
+body{
+    margin-top: 50px;
+}
 .nav{
     font-family: "Poppins",serif;
     font-size: 17px;
@@ -18,4 +21,3 @@
     display: none;
 }
 
-/*---------------------------------------- footer-CSS --------------------------- */

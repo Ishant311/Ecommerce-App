@@ -12,6 +12,7 @@ import { useCart } from '../../context/cart'
 function Header() {
   const [cart] = useCart();
   const [auth,setAuth] = useAuth();
+  const [search,setSearch] = useState(false);
   const navigate = useNavigate();
   const categories = useCategory();
   const [value,setValue] = useState(categories?.[0]?.slug || "");
@@ -42,8 +43,9 @@ function Header() {
   }
   return (
     <>
-      <Disclosure as="nav" className="bg-gray-800 flex justify-between nav w-[100%] ">
-        <div className="mx-auto w-[100%] px-2 md:px-6 lg:px-8">
+      <Disclosure as="nav" className="bg-gray-800 flex justify-between nav w-[100%] fixed top-0 z-100">
+          {search === false?        
+          <div className="mx-auto w-[100%] px-2 md:px-6 lg:px-8">
           <div className="relative flex h-16 items-center justify-between">
             <div className="absolute inset-y-0 right-0 flex items-center md:hidden">
               <DisclosureButton className="group relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:ring-2 focus:ring-white focus:outline-hidden focus:ring-inset">
@@ -53,14 +55,15 @@ function Header() {
                 <XMarkIcon aria-hidden="true" className="hidden size-6 group-data-open:block" />
               </DisclosureButton>
             </div>
-            <div className="flex flex-1 items-center justify-between">
+            <div className="flex items-center justify-between w-[100%]">
                 <div className='flex sm:items-center sm:justify-between sm:w-[10%] w-[5%] items-center justify-evenly'>
                 <i className="fa-solid fa-cart-shopping text-white sm:text-2xl"></i> 
                 <span className='text-white sm:text-[90%]'>Ecommerce</span>
                 </div>
-                <SearchInput/>
-              <div className="hidden md:ml-6 md:block">
-                <div className="flex space-x-4">
+              <div className="flex hidden md:ml-6 md:block flex-1">
+                <div className="flex space-x-4 justify-end items-center">
+                  <SearchInput/>
+
                   {navigation.map((item) => 
                     item.name !== "Categories"?(
                       <NavLink
@@ -68,8 +71,8 @@ function Header() {
                       to={item.href}
                       className={({ isActive }) =>
                         `${isActive ? 'bg-gray-900 text-white' : 'text-gray-300  hover:bg-gray-700 hover:text-white'} rounded-md px-3 py-2 link`
-                      }
-                      >
+                    }
+                    >
                       {item.name === "Cart"?`Cart (${cart?.length})`:item.name}
                     </NavLink>):( 
                       <select key={item.name} className='text-white' value={value} onChange={(e)=>{
@@ -89,23 +92,24 @@ function Header() {
                         </option>
                         {categories.map(category=>(
                           // <Link to = {`/category/${category.slug}`}>
-                            <option key = {category._id} value = {category.slug} className='bg-black'>{category.name}</option>
-                         
+                          <option key = {category._id} value = {category.slug} className='bg-black'>{category.name}</option>
+                          
                         ))}
                     </select> )
                   )}
                     
                   {
-                  auth?.user?.name?(
-                        <select id="options" className='text-white text-center' onChange={(e)=>{
-                          e.target.value === "logout"?handleLogout():e.target.value === "dashboard" && auth.user.role === 1?navigate("/admin-dashboard"):navigate("/dashboard")}}>
+                    auth?.user?.name?(
+                      <select id="options" className='text-white text-center' onChange={(e)=>{
+                        e.target.value === "logout"?handleLogout():e.target.value === "dashboard" && auth.user.role === 1?navigate("/admin-dashboard"):navigate("/dashboard")}}>
                           <option value="profile" className='text-black hidden'>{auth.user.name}</option>
                           <option value="dashboard" className='text-black'>Dashboard</option>
                           <option value="logout" className='text-black'>Logout
                           </option>
                         </select>
                   ):null
-                  }
+                }
+                </div>
                   
                 </div>
               </div>
@@ -129,7 +133,7 @@ function Header() {
               </DisclosurePanel>
             </div>
           </div>
-        </div>
+    :<SearchInput/>}
 
       </Disclosure>
 

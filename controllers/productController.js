@@ -190,7 +190,7 @@ export const productListController = async (req,res)=>{
     try {
         const perPage = 6;
         const page = req.params.page?req.params.page:1;
-        const products = await productModel.find({}).select("-photo").skip((page-1)*perPage).limit(perPage).sort({createdAt:-1});
+        const products = await productModel.find({}).select("-photo").limit(perPage*page).sort({createdAt:-1});
 
         res.status(200).send({
             success:true,
